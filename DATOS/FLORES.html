@@ -6,13 +6,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" href="img/flowers.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Poppins:wght@500;900&display=swap" rel="stylesheet">
     <title>FLORES</title>
+    <style>
+      /* ===== DEDICATORIA TYPEWRITER ===== */
+      .dedicatoria-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.2rem 1rem 0.8rem;
+        text-align: center;
+        /* Gradiente sutil para que el texto se lea sobre las flores */
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.75) 0%,
+          rgba(0, 0, 0, 0.5) 70%,
+          transparent 100%
+        );
+      }
+
+      .dedicatoria-title {
+        font-family: 'Special Elite', cursive;
+        font-size: 1rem;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 1rem;
+        opacity: 0;
+        animation: fadeInTitle 0.8s ease forwards 0.3s;
+      }
+
+      @keyframes fadeInTitle {
+        to { opacity: 1; }
+      }
+
+      .typewriter-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .typewriter-text {
+        font-family: 'Special Elite', cursive;
+        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        color: #fbff00;
+        text-shadow:
+          0 0 8px #fbff00,
+          0 0 20px #fbff00,
+          0 0 40px rgba(251, 255, 0, 0.5);
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-width: 700px;
+        line-height: 1.8;
+        display: inline-block;
+      }
+
+      /* Cursor parpadeante separado */
+      .typewriter-cursor {
+        display: inline-block;
+        width: 3px;
+        height: 1.2em;
+        background-color: #fbff00;
+        box-shadow: 0 0 8px #fbff00, 0 0 20px #fbff00;
+        vertical-align: middle;
+        margin-left: 3px;
+        animation: blink-cursor 0.75s step-end infinite;
+      }
+
+      .typewriter-cursor.hidden {
+        display: none;
+      }
+
+      @keyframes blink-cursor {
+        from, to { opacity: 1; }
+        50%      { opacity: 0; }
+      }
+
+      .dedicatoria-deco {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 1.2rem;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .dedicatoria-deco span {
+        display: inline-block;
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(to right, transparent, #fbff00, transparent);
+      }
+
+      .dedicatoria-deco .heart {
+        font-size: 1.4rem;
+        color: #fbff00;
+        text-shadow: 0 0 12px #fbff00, 0 0 25px rgba(251,255,0,0.7);
+        animation: heartbeat 1.2s ease-in-out infinite 6.5s;
+        width: auto;
+        height: auto;
+        background: none;
+      }
+
+      @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50%       { transform: scale(1.25); }
+      }
+
+      /* Separador entre dedicatoria y flores */
+      .dedicatoria-separator {
+        position: fixed;
+        top: auto;
+        width: 80%;
+        max-width: 500px;
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(251,255,0,0.3), transparent);
+        margin: 0 auto;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+    </style>
 </head>
 
 <body class="container">
     <audio src="/DATOS/img/Floricienta.mp3" autoplay loop>
     Tu navegador no soporta el elemento de audio.
     </audio>
+    <!-- ===== DEDICATORIA PARA LEYDI ===== -->
+    <div class="dedicatoria-wrapper">
+      <p class="dedicatoria-title">✦ Un mensaje para ti ✦</p>
+      <div class="typewriter-container">
+        <span class="typewriter-text" id="typewriter-msg"></span><span class="typewriter-cursor" id="typewriter-cursor"></span>
+      </div>
+      <div class="dedicatoria-deco" id="dedicatoria-deco">
+        <span></span>
+        <div class="heart">♡</div>
+        <span></span>
+      </div>
+    </div>
+
     <div class="night"></div>
     <div class="flowers">
       <div class="flower flower--1">
@@ -276,5 +415,37 @@
       </div>
     </div>
     <script src="main.js"></script>
+    <script>
+      /* ===== EFECTO MÁQUINA DE ESCRIBIR REAL (letra por letra) ===== */
+      (function () {
+        const mensaje = "Mi amor Leydi, cada flor que ves aquí representa todo lo que siento por ti. Eres mi jardín, mi luz y mi razón. Te amo infinitamente. 🌻";
+        const el      = document.getElementById('typewriter-msg');
+        const cursor  = document.getElementById('typewriter-cursor');
+        const delay   = 55;   // ms entre cada letra (baja = más rápido)
+        let index = 0;
+
+        function escribir() {
+          if (index < mensaje.length) {
+            // Soporte para emojis y caracteres Unicode (codePoints)
+            const punto = mensaje.codePointAt(index);
+            const char  = String.fromCodePoint(punto);
+            el.textContent += char;
+            index += char.length;  // los emojis ocupan 2 unidades
+            setTimeout(escribir, delay);
+          } else {
+            // Terminó: cursor sigue parpadeando 3 s y se oculta
+            setTimeout(function () {
+              cursor.classList.add('hidden');
+              // Muestra la decoración del corazón
+              const deco = document.getElementById('dedicatoria-deco');
+              if (deco) deco.style.opacity = '1';
+            }, 3000);
+          }
+        }
+
+        // Arranca después de 800 ms para que el título se vea primero
+        setTimeout(escribir, 800);
+      })();
+    </script>
   </body>
 </html>
